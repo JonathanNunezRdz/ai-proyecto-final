@@ -13,7 +13,6 @@ def main():
     #   import standard libraries
     import numpy as np
     import pandas as pd
-    import sys
     import time
 
     #   import functions
@@ -44,12 +43,10 @@ def main():
     #   and y_training, the data will be divided in according to the specified training_size in line 28.
     x_training, y_training, x_testing, y_testing, labels, labels_list = uf.load_data(csv, display, will_scale_x, training_size)
 
-    print(labels_list)
-    sys.exit()
-
 
     #   calculate the distances for each of the x_testing row with all of the rows of X_training
     euclidean_distances = uf.compute_euclidean_distances(x_training, x_testing)
+
 
     #   k defines how many rows it will compare to get the probabilities for the classes
     k = 20

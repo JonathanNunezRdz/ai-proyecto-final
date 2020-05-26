@@ -10,7 +10,6 @@
 
 import pandas as pd
 import numpy as np
-import sys
 
 def clean_column(data, mode, **kwargs):
     data = data.T
@@ -156,116 +155,116 @@ def normalize_data(x, mode, **kwargs):
         
         return x_scaled
 
-# """return an array that contains (in the columns) the distances for each testing point"""
-# def compute_euclidean_distances(x_training, x_testing):
-#     euclidean_distances = np.zeros(shape = (x_training.shape[0],0))
+"""return an array that contains (in the columns) the distances for each testing point"""
+def compute_euclidean_distances(x_training, x_testing):
+    euclidean_distances = np.zeros(shape = (x_training.shape[0],0))
     
-#     for i in range(x_testing.shape[0]):
-#         testing_point = x_testing[i,:]
-#         euclidean_distance = compute_distance(x_training, testing_point)
-#         euclidean_distances = np.concatenate((euclidean_distances, euclidean_distance), axis=1) 
+    for i in range(x_testing.shape[0]):
+        testing_point = x_testing[i,:]
+        euclidean_distance = compute_distance(x_training, testing_point)
+        euclidean_distances = np.concatenate((euclidean_distances, euclidean_distance), axis=1) 
 
-#     return euclidean_distances
+    return euclidean_distances
 
-# """return the euclidean distance for a specific testing point"""
-# def compute_distance(x_training, testing_point):
-#     distance = np.zeros(shape = (x_training.shape[0], 1))
-#     for i in range(x_training.shape[0]):
-#         for j in range(x_training.shape[1]):
-#             distance[i,0] += (x_training[i,j] - testing_point[j])**2
-#         distance [i,0] = np.sqrt(distance[i,0])
-#     return distance
+"""return the euclidean distance for a specific testing point"""
+def compute_distance(x_training, testing_point):
+    distance = np.zeros(shape = (x_training.shape[0], 1))
+    for i in range(x_training.shape[0]):
+        for j in range(x_training.shape[1]):
+            distance[i,0] += (x_training[i,j] - testing_point[j])**2
+        distance [i,0] = np.sqrt(distance[i,0])
+    return distance
 
-# """return an array that contains the probabilities of belonging to either class 0 or 1"""
-# def compute_conditional_probabilities(euclidean_distances, y_training, k):
-#     nearest = np.zeros(shape = (euclidean_distances.shape[1], k))
-#     for i in range(euclidean_distances.shape[1]):
-#         euclidean_distance = np.array([euclidean_distances[:,i]])
-#         euclidean_distance = np.concatenate((euclidean_distance.T, y_training), axis=1)
-#         euclidean_distance = euclidean_distance[euclidean_distance[:,0].argsort()]
-#         for j in range(k):
-#             nearest[i,j] = euclidean_distance[j,1]
+"""return an array that contains the probabilities of belonging to either class 0 or 1"""
+def compute_conditional_probabilities(euclidean_distances, y_training, k):
+    nearest = np.zeros(shape = (euclidean_distances.shape[1], k))
+    for i in range(euclidean_distances.shape[1]):
+        euclidean_distance = np.array([euclidean_distances[:,i]])
+        euclidean_distance = np.concatenate((euclidean_distance.T, y_training), axis=1)
+        euclidean_distance = euclidean_distance[euclidean_distance[:,0].argsort()]
+        for j in range(k):
+            nearest[i,j] = euclidean_distance[j,1]
 
-#     conditional_probalilities = np.zeros(shape = (nearest.shape[0], 2))
+    conditional_probalilities = np.zeros(shape = (nearest.shape[0], 2))
 
-#     for i in range(nearest.shape[0]):
-#         count_positives = 0
-#         count_negatives = 0
-#         for j in range(nearest.shape[1]):
-#             if nearest[i,j] == 1: count_positives += 1
-#             else: count_negatives += 1
-#         conditional_probalilities[i, 0] = count_positives / k
-#         conditional_probalilities[i, 1] = count_negatives / k
+    for i in range(nearest.shape[0]):
+        count_positives = 0
+        count_negatives = 0
+        for j in range(nearest.shape[1]):
+            if nearest[i,j] == 1: count_positives += 1
+            else: count_negatives += 1
+        conditional_probalilities[i, 0] = count_positives / k
+        conditional_probalilities[i, 1] = count_negatives / k
 
-#     return conditional_probalilities
+    return conditional_probalilities
 
-# """predict based on the conditional probabilities"""
-# def predict(conditional_probalilities):
-#     predictions = np.zeros(shape = (conditional_probalilities.shape[0], 1))
-#     for i in range(conditional_probalilities.shape[0]):
-#         if conditional_probalilities[i,0] >= conditional_probalilities[i,1]: predictions[i,0] = 1
-#         else: predictions[i,0] = 0
+"""predict based on the conditional probabilities"""
+def predict(conditional_probalilities):
+    predictions = np.zeros(shape = (conditional_probalilities.shape[0], 1))
+    for i in range(conditional_probalilities.shape[0]):
+        if conditional_probalilities[i,0] >= conditional_probalilities[i,1]: predictions[i,0] = 1
+        else: predictions[i,0] = 0
     
-#     return predictions
+    return predictions
 
-# """get the true positives, truw negatives, false positives, and false negatives as an array"""
-# def get_confussion_matrix(predictions, y_testing):
-#     confusion_matrix = np.zeros([2,2])
+"""get the true positives, truw negatives, false positives, and false negatives as an array"""
+def get_confussion_matrix(predictions, y_testing):
+    confusion_matrix = np.zeros([2,2])
 
-#     TP = 0
-#     TN = 0
-#     FP = 0
-#     FN = 0
+    TP = 0
+    TN = 0
+    FP = 0
+    FN = 0
 
-#     for i in range(predictions.shape[0]):
-#         if predictions[i,0] == 1 and y_testing[i,0] == 1: TP += 1
-#         elif predictions[i,0] == 0 and y_testing[i,0] == 0: TN += 1
-#         elif predictions[i,0] == 1 and y_testing[i,0] == 0: FP += 1
-#         else: FN += 1
+    for i in range(predictions.shape[0]):
+        if predictions[i,0] == 1 and y_testing[i,0] == 1: TP += 1
+        elif predictions[i,0] == 0 and y_testing[i,0] == 0: TN += 1
+        elif predictions[i,0] == 1 and y_testing[i,0] == 0: FP += 1
+        else: FN += 1
 
-#     confusion_matrix[0][0] = TP
-#     confusion_matrix[1][1] = TN
-#     confusion_matrix[0][1] = FP
-#     confusion_matrix[1][0] = FN
+    confusion_matrix[0][0] = TP
+    confusion_matrix[1][1] = TN
+    confusion_matrix[0][1] = FP
+    confusion_matrix[1][0] = FN
 
-#     return confusion_matrix
+    return confusion_matrix
 
-# """print to the console the performance metrics"""
-# def print_performance_metrics(confusion_matrix):
-#     TP = confusion_matrix[0][0]
-#     TN = confusion_matrix[1][1]
-#     FP = confusion_matrix[0][1]
-#     FN = confusion_matrix[1][0]
+"""print to the console the performance metrics"""
+def print_performance_metrics(confusion_matrix):
+    TP = confusion_matrix[0][0]
+    TN = confusion_matrix[1][1]
+    FP = confusion_matrix[0][1]
+    FN = confusion_matrix[1][0]
 
-#     accuracy = (TP + TN)/(TP + TN + FP + FN)
-#     precision = TP /(TP + FP)
-#     recall = TP/(TP + FN)
-#     specificity = TN/(TN + FP)
-#     f1_score = 2*(precision * recall)/(precision + recall)
+    accuracy = (TP + TN)/(TP + TN + FP + FN)
+    precision = TP /(TP + FP)
+    recall = TP/(TP + FN)
+    specificity = TN/(TN + FP)
+    f1_score = 2*(precision * recall)/(precision + recall)
 
-#     print('-'*40)
-#     print('confusion matrix')
-#     print('-'*40)
-#     print('true positives\t\t=> {}'.format(TP))
-#     print('true negatives\t\t=> {}'.format(TN))
-#     print('false positives\t\t=> {}'.format(FP))
-#     print('false negatives\t\t=> {}'.format(FN))
-#     print('-'*40)
-#     print('scores')
-#     print('-'*40)
-#     print('accuracy\t\t=> {}'.format(accuracy))
-#     print('precision\t\t=> {}'.format(precision))
-#     print('recall\t\t\t=> {}'.format(recall))
-#     print('specificity\t\t=> {}'.format(specificity))
-#     print('f1 score\t\t=> {}'.format(f1_score))
+    print('-'*40)
+    print('confusion matrix')
+    print('-'*40)
+    print('true positives\t\t=> {}'.format(TP))
+    print('true negatives\t\t=> {}'.format(TN))
+    print('false positives\t\t=> {}'.format(FP))
+    print('false negatives\t\t=> {}'.format(FN))
+    print('-'*40)
+    print('scores')
+    print('-'*40)
+    print('accuracy\t\t=> {}'.format(accuracy))
+    print('precision\t\t=> {}'.format(precision))
+    print('recall\t\t\t=> {}'.format(recall))
+    print('specificity\t\t=> {}'.format(specificity))
+    print('f1 score\t\t=> {}'.format(f1_score))
 
-# """print as a pandas dataframe"""
-# def print_features(labels, x_testing, conditional_probalilities):
-#     labels = np.array([labels[0:-1]])
-#     labels = np.concatenate((labels, [['Prob. Diabetes', 'Prob. No Diabetes']]), axis=1)
+"""print as a pandas dataframe"""
+def print_features(labels, x_testing, conditional_probalilities):
+    labels = np.array([labels[0:-1]])
+    labels = np.concatenate((labels, [['Prob. Placed', 'Prob. Not Placed']]), axis=1)
 
-#     x_testing = np.concatenate((x_testing, conditional_probalilities), axis=1)
+    x_testing = np.concatenate((x_testing, conditional_probalilities), axis=1)
 
-#     df = pd.DataFrame(data=x_testing, columns=labels[0,:])
+    df = pd.DataFrame(data=x_testing, columns=labels[0,:])
     
-#     print(df)
+    print(df)
