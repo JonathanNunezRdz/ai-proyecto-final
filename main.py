@@ -6,6 +6,7 @@
     Author:         Jonathan Nunez Rdz.
     Institution:    Universidad de Monterrey
     First Created:  Wed 13 May, 2020
+    Last Edited:    Tue 26 May, 2020
     Email:          jonathan.nunez@udem.edu // jonathannunezr1@gmail.com
 """
 
@@ -41,7 +42,7 @@ def main():
     #   -------------------------------------------------------------------------------------------
     #   uf.load_data will read the determined csv (must be local) with pandas and divide tha data to x_training 
     #   and y_training, the data will be divided in according to the specified training_size in line 28.
-    x_training, y_training, x_testing, y_testing, labels, labels_list = uf.load_data(csv, display, will_scale_x, training_size)
+    x_training, y_training, x_testing, y_testing, labels, labels_list, x_testing_not_normalized = uf.load_data(csv, display, will_scale_x, training_size)
 
 
     #   calculate the distances for each of the x_testing row with all of the rows of X_training
@@ -66,8 +67,8 @@ def main():
     #   print_performance_metrics will print the accuracy, precision, recall, specificity, and f1 score based on the confusion matrix
     uf.print_performance_metrics(confusion_matrix)
 
-
-    uf.print_features(labels, x_testing, conditional_probabilities)
+    #   print the features in the console as well as saving an excel file in current directory
+    uf.print_features(labels, x_testing_not_normalized, conditional_probabilities, y_testing)
 
 if __name__ == "__main__":
     main()

@@ -5,12 +5,14 @@
     Author:         Jonathan Nunez Rdz.
     Institution:    Universidad de Monterrey
     First Created:  Wed 13 May, 2020
+    Last Edited:    Tue 26 May, 2020
     Email:          jonathan.nunez@udem.edu // jonathannunezr1@gmail.com
 """
 
 import pandas as pd
 import numpy as np
-
+import sys
+"""change columns with text to numbers"""
 def clean_column(data, mode, **kwargs):
     data = data.T
     column = np.zeros(shape= (data.shape[0], 1))
@@ -39,7 +41,6 @@ def clean_column(data, mode, **kwargs):
 
         return column[:,0], labels
     
-
 """load data from input csv by user"""
 def load_data(file, display, will_scale_x, training_size):
     try:
@@ -72,6 +73,7 @@ def load_data(file, display, will_scale_x, training_size):
     # split testing data into x's and y
     x_testing = pd.DataFrame.to_numpy(testing_data.iloc[: , 1:-2])
     y_testing = pd.Series.to_numpy(testing_data.iloc[:, -2]).reshape(x_testing.shape[0], 1)
+    x_testing_not_normalized = np.array(x_testing)
 
     # clean data columns
     labels_list = list()
@@ -96,8 +98,6 @@ def load_data(file, display, will_scale_x, training_size):
             y_testing[:,i] = clean_column(np.array([y_testing[:,i]]), 'testing', labels=labels_list[label_index])
             label_index += 1
 
-    # print(pd.DataFrame(data=x_training, columns=labels[0:-1]))
-    # print(pd.DataFrame(data=y_training, columns=[labels[-1]]))
 
     # feature scalling for x if specified
     if(will_scale_x == 1):
@@ -121,10 +121,10 @@ def load_data(file, display, will_scale_x, training_size):
                 print(x_testing_scaled[i])
 
         # return the training data and testing data scaled
-        return x_training_scaled, y_training, x_testing_scaled, y_testing, labels, labels_list
+        return x_training_scaled, y_training, x_testing_scaled, y_testing, labels, labels_list, x_testing_not_normalized
     else:
         # return the training data and testing data
-        return x_training, y_training, x_testing, y_testing, labels, labels_list
+        return x_training, y_training, x_testing, y_testing, labels, labels_list, x_testing_not_normalized
 
 """scale x_training to avoid conflicts"""
 def normalize_data(x, mode, **kwargs):
@@ -136,11 +136,11 @@ def normalize_data(x, mode, **kwargs):
         for i in range(x.shape[1]):
             col = np.zeros_like(x)
             for j in range(x.shape[0]):
-                col[j] = x[j][i]            
-            mean[i] = col.mean()
-            deviation[i] = col.std()
+                col[j] = x[j,i]            
+            mean[i,0] = col.mean()
+            deviation[i,0] = col.std()
             for j in range(x.shape[0]):
-                x_scaled[j][i] = (x[j][i] - col.mean()) / col.std()
+                x_scaled[j,i] = (x[j,i] - col.mean()) / col.std()
 
         return x_scaled,mean,deviation
     
@@ -151,8 +151,8 @@ def normalize_data(x, mode, **kwargs):
 
         for i in range(x.shape[1]):
             for j in range(x.shape[0]):
-                x_scaled[j][i] = (x[j][i] - defined_mean[i]) / defined_deviation[i]
-        
+                x_scaled[j,i] = (x[j,i] - defined_mean[i,0]) / defined_deviation[i,0]
+
         return x_scaled
 
 """return an array that contains (in the columns) the distances for each testing point"""
@@ -258,13 +258,18 @@ def print_performance_metrics(confusion_matrix):
     print('specificity\t\t=> {}'.format(specificity))
     print('f1 score\t\t=> {}'.format(f1_score))
 
-"""print as a pandas dataframe"""
-def print_features(labels, x_testing, conditional_probalilities):
+"""print as a pandas dataframe and an excel file to current directory with results"""
+def print_features(labels, x_testing, conditional_probalilities, y_testing):
     labels = np.array([labels[0:-1]])
-    labels = np.concatenate((labels, [['Prob. Placed', 'Prob. Not Placed']]), axis=1)
+    labels = np.concatenate((labels, [['Prob. Placed', 'Prob. Not Placed', 'Actual']]), axis=1)
 
     x_testing = np.concatenate((x_testing, conditional_probalilities), axis=1)
+    x_testing = np.concatenate((x_testing, y_testing), axis=1)
 
     df = pd.DataFrame(data=x_testing, columns=labels[0,:])
     
+    writer = pd.ExcelWriter('results.xlsx')
+    df.to_excel(writer, 'predictions')
+    writer.save()
+
     print(df)
