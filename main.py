@@ -3,11 +3,13 @@
     k-nearest neighbors and predict based on the probabilities of belonging
     to a certain class.
 
-    Author:         Jonathan Nunez Rdz.
+    Author:         Jonathan Nunez Rdz., Andres Esparza García, Adrian Verdugo Pérez
     Institution:    Universidad de Monterrey
-    First Created:  Wed 13 May, 2020
-    Last Edited:    Tue 26 May, 2020
-    Email:          jonathan.nunez@udem.edu // jonathannunezr1@gmail.com
+    First Created:  Wed 22 May, 2020
+    Last Edited:    Tue 28 May, 2020
+    Email:          jonathan.nunez@udem.edu
+                    adrian.verdugo@udem.edu
+                    andres.esparza@udem.edu
 """
 
 def main():
@@ -22,7 +24,7 @@ def main():
     print("--- the program has started, please wait ---")
     start_time = time.time()
 
-    #   define the name of the flie to read the data from
+    #   define the name of the file to read the data from
     csv = 'campus_placement.csv'
     #   define the training data size, testing data size will be calculated accordingly
     training_size = 0.80
@@ -52,7 +54,7 @@ def main():
     #   k defines how many rows it will compare to get the probabilities for the classes
     k = 20
     #   -------------------------------------------------------------------------------------------
-    #   get the probabilities, with the distances of the x_testing, of belonging to a class, in this case, 0 or 1
+    #   get the probabilities, with the distances of the x_testing, of belonging to a class, in this case, 1 or 0
     conditional_probabilities = uf.compute_conditional_probabilities(euclidean_distances, y_training, k)
 
 

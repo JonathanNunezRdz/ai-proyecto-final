@@ -2,11 +2,13 @@
     This script is used as a library, it contains several functions that are used for
     implemeting k-nearest neighbors to create a model for predicting.
 
-    Author:         Jonathan Nunez Rdz.
+    Author:         Jonathan Nunez Rdz., Andres Esparza García, Adrian Verdugo Pérez
     Institution:    Universidad de Monterrey
-    First Created:  Wed 13 May, 2020
-    Last Edited:    Tue 26 May, 2020
-    Email:          jonathan.nunez@udem.edu // jonathannunezr1@gmail.com
+    First Created:  Wed 22 May, 2020
+    Last Edited:    Tue 28 May, 2020
+    Email:          jonathan.nunez@udem.edu
+                    adrian.verdugo@udem.edu
+                    andres.esparza@udem.edu
 """
 
 import pandas as pd
